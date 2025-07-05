@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import ProjectDetailsModal from "@/clients/ProjectDetailsModal";
+import ProjectDetailsModal from "./ProjectDetailsModal";
 
 type Project = {
   id: number;
