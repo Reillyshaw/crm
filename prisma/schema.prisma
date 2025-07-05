@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  role      String   // e.g., 'admin', 'user'
+  tasks     Task[]   @relation("CreatedTasks")
+  comments  Comment[]
+  projects  Project[] @relation("ProjectTeam")
+  assignedTasks Task[] @relation("TaskAssignees")
+  createdAt DateTime @default(now())
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  client      String?
+  status      String?
+  team        User[]   @relation("ProjectTeam")
+  tasks       Task[]
+  categories  Category[]
+  createdAt   DateTime @default(now())
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      String   // e.g., 'todo', 'in_progress', 'done'
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   Int?
+  assignees   User[]   @relation("TaskAssignees")
+  comments    Comment[]
+  dueDate     DateTime?
+  tags        Tag[]    @relation("TaskTags")
+  createdAt   DateTime @default(now())
+  createdBy   User?    @relation("CreatedTasks", fields: [createdById], references: [id])
+  createdById Int?
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  task      Task?    @relation(fields: [taskId], references: [id])
+  taskId    Int?
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  name        String
+  parent      Category?  @relation("CategoryParent", fields: [parentId], references: [id])
+  parentId    Int?
+  children    Category[] @relation("CategoryParent")
+  project     Project?   @relation(fields: [projectId], references: [id])
+  projectId   Int?
+  keywords    Keyword[]
+  metadata    String?    // JSON: {pageName, h1, url, mappedUrl, ...}
+}
+
+model Keyword {
+  id         Int       @id @default(autoincrement())
+  value      String
+  volume     Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  source     String?   // e.g., 'google', 'manual'
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  tasks Task[] @relation("TaskTags")
+}
+
+model Settings {
+  id              Int    @id @default(autoincrement())
+  userId          Int?
+  googleAdsApiKey String?
+  createdAt       DateTime @default(now())
+}
