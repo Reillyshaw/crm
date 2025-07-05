@@ -53,7 +53,7 @@ export default function LoginPage() {
             <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
               Email address
             </label>
-            <input
+        <input
               id="email"
               name="email"
               type="email"
@@ -62,23 +62,23 @@ export default function LoginPage() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-            />
+        />
           </div>
           
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
               Password
             </label>
-            <input
+        <input
               id="password"
               name="password"
-              type="password"
+          type="password"
               required
               className="w-full px-4 py-3 border border-black rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               placeholder="Enter your password"
-              value={password}
+          value={password}
               onChange={(e) => setPassword(e.target.value)}
-            />
+        />
           </div>
           
           <div>
